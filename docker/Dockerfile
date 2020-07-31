@@ -4,7 +4,7 @@ FROM golang:1.13-alpine
 ENV GOSUMDB=off
 
 RUN mkdir /app
-RUN mkdir /app/warungpintar
+RUN mkdir /app/simpleapi
 
 # Install curl 
 RUN apk --no-cache add bash \
@@ -14,12 +14,10 @@ RUN apk --no-cache add bash \
 	g++ \
 	inotify-tools
 
-WORKDIR /app/warungpintar
-COPY . /app/warungpintar
+WORKDIR /app/simpleapi
+COPY . /app/simpleapi
 
 RUN mkdir -p /go/_tools
-
-RUN ls -l
 
 ADD docker/config/build.sh /go/_tools
 ADD docker/config/reflex.conf /go/_tools
