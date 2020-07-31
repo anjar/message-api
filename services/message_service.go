@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"simpleapi/models"
 	"simpleapi/repositories"
-	// "simpleapi/helpers"
+	"simpleapi/helpers"
 	// "log"
 
-	// npq "github.com/Knetic/go-namedParameterQuery"
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris/v12"
 )
@@ -20,6 +19,7 @@ import (
 // because we may need to change or try an experimental different domain logic at the future.
 type MessageService interface {
 	
+	GetMessageList(inputPagination InputPagination) ([]models.Message, map[string]interface{}, error)
 	CreateMessage(messageModel models.Message, ctx iris.Context) (models.Message, error)
 }
 // NewMessageService returns the default message service.
@@ -32,6 +32,27 @@ func NewMessageService(repo repositories.MessageRepository) MessageService {
 type messageService struct {
 	repo repositories.MessageRepository
 }
+
+func (service *messageService) GetMessageList(inputPagination InputPagination) ([]models.Message, map[string]interface{}, error) {
+	return service.repo.All(func(db *gorm.DB) (messages []models.Message, paginator map[string]interface{} , err error) {
+		dbCon := db.Debug()
+
+		// Process query condition and its bind parameters
+		paginator, _ = helpers.GetPagination(dbCon, inputPagination.Limit, inputPagination.Page)
+
+		// Set offset
+		offset := 0
+		if inputPagination.Page > 1 {
+			offset = (inputPagination.Page - 1) * inputPagination.Limit
+		}
+		dbWithConfig := db.Debug().Limit(inputPagination.Limit).Offset(offset).Order(inputPagination.OrderBy)
+
+		dbWithConfig.Find(&messages)
+
+		return messages, paginator, err
+	})
+}
+
 
 func (service *messageService) CreateMessage(messageModel models.Message, ctx iris.Context) (models.Message, error) {
 	return service.repo.CreateMessage(func(db *gorm.DB) (message models.Message, b bool, err error) {

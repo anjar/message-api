@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	
+	// "log"
 	"simpleapi/services"
 	"simpleapi/helpers"
 	"simpleapi/models"
@@ -40,11 +40,31 @@ func (controller *MessageController) Post() mvc.Result {
 	return helpers.ResponseJson(iris.StatusOK, resultDB)
 }
 
-func (controller *MessageController) Get() mvc.Result {
-	
-	return mvc.Response{
-		Code:        iris.StatusOK,
-		ContentType: "application/json",
-		Text:        "Message List Here",
+func (controller *MessageController) GetList() mvc.Result {
+
+	ctx 	:= controller.Ctx
+	limit 	:= ctx.URLParamIntDefault("limit", 25)
+	page 	:= ctx.URLParamIntDefault("page", 1)
+	orderBy := ctx.URLParamDefault("order", "id DESC")
+
+	input := services.InputPagination {
+		Limit : limit,
+		Page : page,
+		OrderBy: orderBy,
 	}
+	err := ctx.ReadJSON(&input)
+
+	if err != nil {
+		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map {
+			"message": err.Error(),
+		})
+		return response
+	}
+
+	results, pagination, err := controller.Services.GetMessageList(input)
+	response := helpers.ResponseJson(iris.StatusOK, iris.Map{
+		"items":      results,
+		"pagination": pagination,
+	})
+	return response
 }

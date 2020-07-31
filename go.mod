@@ -3,7 +3,6 @@ module simpleapi
 go 1.13
 
 require (
-	github.com/Knetic/go-namedParameterQuery v0.0.0-20150709205813-b7327e472dfd
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
