@@ -1,4 +1,4 @@
-# message-api
+# simple-message-api
 Simple API with Golang
 
 
