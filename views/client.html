@@ -77,7 +77,7 @@
                         OnChat: function (nsConn, msg) { // "OnChat" event.
                             console.log(msg);
 
-                            addMessage(msg.Body);
+                            addMessage("From server: " + msg.Body);
                         },
                         OnVisit: function (nsConn, msg) {
                             const newCount = Number(msg.Body); // or parseInt.

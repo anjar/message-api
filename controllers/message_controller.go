@@ -60,7 +60,7 @@ func (controller *MessageController) GetList() mvc.Result {
 		})
 		return response
 	}
-	
+
 	response := helpers.ResponseJson(iris.StatusOK, iris.Map{
 		"items":      results,
 		"pagination": pagination,

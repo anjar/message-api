@@ -48,8 +48,6 @@ func (c *WebsocketController) OnNamespaceDisconnect(msg websocket.Message) error
 }
 
 func (c *WebsocketController) OnNamespaceConnected(msg websocket.Message) error {
-	// println("Broadcast prefix is: " + c.BroadcastPrefix)
-	fmt.Printf("MSG", msg.Namespace)
 	c.Logger.Log("Connected")
 
 	// visits++
@@ -72,27 +70,15 @@ func (c *WebsocketController) OnNamespaceConnected(msg websocket.Message) error 
 func (c *WebsocketController) OnChat(msg websocket.Message) error {
 	ctx := websocket.GetContext(c.Conn)
 
-	ctx.Application().Logger().Infof("[IP: %s] [ID: %s]  broadcast to other clients the message [%s]",
-		ctx.RemoteAddr(), c, string(msg.Body))
-
 	var dataModels models.Message
 	dataModels.Message = string(msg.Body)
-	resultDB, err := c.Services.CreateMessage(dataModels, ctx)
+	_, err := c.Services.CreateMessage(dataModels, ctx)
 	if err != nil {
 		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map{
 			"message": "failed to save db",
 		})
-		fmt.Printf("response ; %v\n", response)
+		fmt.Printf("Error : %v\n", response)
 	}
-
-	fmt.Printf("MODELS ==== %v\n", resultDB)
-	// resultDB, err := controller.Services.CreateMessage(inputForm, ctx)
-	// if err != nil {
-	// 	response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map{
-	// 		"message": "failed to save db",
-	// 	})
-	// 	return response
-	// }
 
 	c.Conn.Server().Broadcast(c, msg)
 
