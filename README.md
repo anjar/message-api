@@ -12,7 +12,7 @@ Simple API with Golang
 ## Run with Docker
 1. go to repo dir ```cd /path/to/repo/simpleapi```
 2. Run ```docker-compose up```
-3. Open http://localhost/client or try below endpoint
+3. Open http://localhost:8080/client in browser or endpoint with curl
 
 ## How to Post
 
