@@ -52,16 +52,15 @@ func (controller *MessageController) GetList() mvc.Result {
 		Page : page,
 		OrderBy: orderBy,
 	}
-	err := ctx.ReadJSON(&input)
-
+	
+	results, pagination, err := controller.Services.GetMessageList(input)
 	if err != nil {
 		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map {
 			"message": err.Error(),
 		})
 		return response
 	}
-
-	results, pagination, err := controller.Services.GetMessageList(input)
+	
 	response := helpers.ResponseJson(iris.StatusOK, iris.Map{
 		"items":      results,
 		"pagination": pagination,

@@ -1,4 +1,4 @@
-package controller_registrator
+package router
 
 import (
 	"simpleapi/repositories"
