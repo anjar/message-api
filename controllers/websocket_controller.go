@@ -5,9 +5,7 @@ import (
 	"sync/atomic"
 	"simpleapi/models"
 	"simpleapi/services"
-	"simpleapi/helpers"
 
-	"github.com/kataras/iris/v12"
     "github.com/kataras/iris/v12/websocket"
 )
 
@@ -55,9 +53,6 @@ func (c *WebsocketController) OnNamespaceConnected(msg websocket.Message) error 
 
 	// This will call the "OnVisit" event on all clients, including the current one,
 	// with the 'newCount' variable.
-	//
-	// There are many ways that u can do it and faster, for example u can just send a new visitor
-	// and client can increment itself, but here we are just "showcasing" the websocket controller.
 	c.Conn.Server().Broadcast(nil, websocket.Message{
 		Namespace: msg.Namespace,
 		Event:     "OnVisit",
@@ -74,10 +69,7 @@ func (c *WebsocketController) OnChat(msg websocket.Message) error {
 	dataModels.Message = string(msg.Body)
 	_, err := c.Services.CreateMessage(dataModels, ctx)
 	if err != nil {
-		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map{
-			"message": "failed to save db",
-		})
-		fmt.Printf("Error : %v\n", response)
+		return err
 	}
 
 	c.Conn.Server().Broadcast(c, msg)

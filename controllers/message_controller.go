@@ -28,7 +28,7 @@ func (controller *MessageController) Post() mvc.Result {
 		return response
 	}
 
-	// save to DB
+	// save data json to Database
 	resultDB, err := controller.Services.CreateMessage(inputForm, ctx)
 	if err != nil {
 		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map{
@@ -37,15 +37,16 @@ func (controller *MessageController) Post() mvc.Result {
 		return response
 	}
 
+	// return json with new created result data from db
 	return helpers.ResponseJson(iris.StatusOK, resultDB)
 }
 
 func (controller *MessageController) GetList() mvc.Result {
 
 	ctx 	:= controller.Ctx
-	limit 	:= ctx.URLParamIntDefault("limit", 25)
-	page 	:= ctx.URLParamIntDefault("page", 1)
-	orderBy := ctx.URLParamDefault("order", "id DESC")
+	limit 	:= ctx.URLParamIntDefault("limit", 10) // for limit, default 10
+	page 	:= ctx.URLParamIntDefault("page", 1) // for pagination
+	orderBy := ctx.URLParamDefault("order", "id DESC") // for ordering data
 
 	input := services.InputPagination {
 		Limit : limit,
@@ -53,6 +54,7 @@ func (controller *MessageController) GetList() mvc.Result {
 		OrderBy: orderBy,
 	}
 	
+	// Query drom db
 	results, pagination, err := controller.Services.GetMessageList(input)
 	if err != nil {
 		response := helpers.ResponseJson(iris.StatusBadRequest, iris.Map {
@@ -61,6 +63,7 @@ func (controller *MessageController) GetList() mvc.Result {
 		return response
 	}
 
+	// return data & its pagination 
 	response := helpers.ResponseJson(iris.StatusOK, iris.Map{
 		"items":      results,
 		"pagination": pagination,

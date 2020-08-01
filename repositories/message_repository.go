@@ -17,7 +17,6 @@ type MessageRepository interface {
 }
 
 // NewMessageRepository returns a new message memory-based repository,
-// the one and only repository type in our example.
 func NewMessageRepository() MessageRepository {
 	baseRepo := NewBaseRepositories()
 
@@ -26,16 +25,17 @@ func NewMessageRepository() MessageRepository {
 	}
 }
 
-// messageRepository is a "MessageRepository"
-// which manages the Dependency Injector.
+// messageRepository is a "MessageRepository" which manages the Dependency Injector.
 type messageRepository struct {
 	BaseRepository *BaseRepositories
 }
 
+// get all message
 func (repository *messageRepository) All(query QueryMessages) (messages []models.Message, paginator map[string]interface{}, err error) {
 	return query(repository.BaseRepository.Database)
 }
 
+// create new message
 func (repository *messageRepository) CreateMessage(query QueryMessage) (message models.Message, err error) {
 	message, _, err = query(repository.BaseRepository.Database)
 	return

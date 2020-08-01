@@ -13,10 +13,6 @@ import (
 
 // MessageService handles CRUID operations of a message model,
 // it depends on a message repository for its actions.
-// It's here to decouple the data source from the higher level compoments.
-// As a result a different repository type can be used with the same logic without any aditional changes.
-// It's an interface and it's used as interface everywhere
-// because we may need to change or try an experimental different domain logic at the future.
 type MessageService interface {
 	
 	GetMessageList(inputPagination InputPagination) ([]models.Message, map[string]interface{}, error)
