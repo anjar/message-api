@@ -26,7 +26,7 @@
 
 <body>
     <div class="container">
-        <span id="online_visitors">1 online visitor</span>
+        <span id="online_visitors">1 Connected Client</span>
     </div>
 
     <!-- the message's input -->
@@ -83,9 +83,9 @@
                             const newCount = Number(msg.Body); // or parseInt.
                             console.log("visit websocket event with newCount of: ", newCount);
 
-                            var text = "1 online visitor";
+                            var text = "1 Connected Client";
                             if (newCount > 1) {
-                                text = newCount + " online visitors";
+                                text = newCount + " Connected Client";
                             }
                             document.getElementById("online_visitors").innerHTML = text;
                         },

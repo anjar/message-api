@@ -9,15 +9,10 @@ import (
     "github.com/kataras/iris/v12/websocket"
 )
 
-type LoggerService interface {
-	Log(string)
-}
-
 type WebsocketController struct {
 	*websocket.NSConn `stateless:"true"`
 	Services services.MessageService
 	Namespace string
-	Logger LoggerService
 }
 
 var visits uint64
@@ -31,7 +26,6 @@ func decrement() uint64 {
 }
 
 func (c *WebsocketController) OnNamespaceDisconnect(msg websocket.Message) error {
-	c.Logger.Log("Disconnected")
 	// visits--
 	newCount := decrement()
 	// This will call the "OnVisit" event on all clients, except the current one,
@@ -46,8 +40,6 @@ func (c *WebsocketController) OnNamespaceDisconnect(msg websocket.Message) error
 }
 
 func (c *WebsocketController) OnNamespaceConnected(msg websocket.Message) error {
-	c.Logger.Log("Connected")
-
 	// visits++
 	newCount := increment()
 

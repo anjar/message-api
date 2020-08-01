@@ -31,7 +31,7 @@ type messageService struct {
 
 func (service *messageService) GetMessageList(inputPagination InputPagination) ([]models.Message, map[string]interface{}, error) {
 	return service.repo.All(func(db *gorm.DB) (messages []models.Message, paginator map[string]interface{} , err error) {
-		dbCon := db.Debug()
+		dbCon := db
 
 		// Process query condition and its bind parameters
 		paginator, _ = helpers.GetPagination(dbCon, inputPagination.Limit, inputPagination.Page)
@@ -41,7 +41,7 @@ func (service *messageService) GetMessageList(inputPagination InputPagination) (
 		if inputPagination.Page > 1 {
 			offset = (inputPagination.Page - 1) * inputPagination.Limit
 		}
-		dbWithConfig := db.Debug().Limit(inputPagination.Limit).Offset(offset).Order(inputPagination.OrderBy)
+		dbWithConfig := db.Limit(inputPagination.Limit).Offset(offset).Order(inputPagination.OrderBy)
 
 		dbWithConfig.Find(&messages)
 
